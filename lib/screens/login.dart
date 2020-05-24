@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../screens/usersHome.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -9,7 +10,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -38,57 +38,60 @@ class _LoginState extends State<Login> {
       _obscureTextSignup = !_obscureTextSignup;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(children: <Widget>[
-        Container(
-              color: Colors.yellow,
-              width: width,
-              height: height,
-              child: CustomPaint(
-                painter: CurvePainter3(),
-              ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            color: Colors.yellow,
+            width: width,
+            height: height,
+            child: CustomPaint(
+              painter: CurvePainter3(),
             ),
-            Container(
-              color: Color(0xff00cc00),
-              width: width,
-              height: height,
-              child: CustomPaint(
-                painter: CurvePainter3(),
-              ),
+          ),
+          Container(
+            color: Color(0xff00cc00),
+            width: width,
+            height: height,
+            child: CustomPaint(
+              painter: CurvePainter3(),
             ),
-            Container(
-              // color: Colors.white,
-              width: width,
-              height: height,
-              child: CustomPaint(
-                painter: CurvePainter4(),
-              ),
+          ),
+          Container(
+            // color: Colors.white,
+            width: width,
+            height: height,
+            child: CustomPaint(
+              painter: CurvePainter4(),
             ),
-            _text(width, height),
-            _form(width, height),
-            _button(width, height),
-            Positioned(
-                top: height * 0.89,
-                left: width * 0.3,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) => Register()));
-                  },
-                  child: Text(
-                    'No account? Register',
-                    style:
-                        GoogleFonts.aBeeZee(color: Colors.white, fontSize: 16),
-                  ),
-                ))
-      ],),
+          ),
+          _text(width, height),
+          _form(width, height),
+          _button(width, height),
+          Positioned(
+              top: height * 0.89,
+              left: width * 0.3,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => Register()));
+                },
+                child: Text(
+                  'No account? Register',
+                  style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 16),
+                ),
+              ))
+        ],
+      ),
     );
   }
+
   Widget _button(double width, double height) {
     return Positioned(
       top: height * 0.72,
@@ -97,7 +100,10 @@ class _LoginState extends State<Login> {
         width: width * 0.4,
         child: FloatingActionButton.extended(
             backgroundColor: Colors.white,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => UserHome()));
+            },
             label: Text(
               'Sign In',
               style: GoogleFonts.aBeeZee(color: Colors.green),
@@ -139,7 +145,6 @@ class _LoginState extends State<Login> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      
                       TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         controller: _emailController,
@@ -157,7 +162,6 @@ class _LoginState extends State<Login> {
                             focusColor: Colors.green,
                             hoverColor: Colors.green),
                       ),
-                      
                       TextFormField(
                         controller: _passwordController,
                         focusNode: myFocusNodePassword,
@@ -191,6 +195,3 @@ class _LoginState extends State<Login> {
     );
   }
 }
-
-
-
