@@ -1,29 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:laundry_app/state/themeNotifier.dart';
+import 'package:laundry_app/utils/theme.dart';
 
-class Services extends StatelessWidget {
+class Services extends StatefulWidget {
+  @override
+  _ServicesState createState() => _ServicesState();
+}
+
+class _ServicesState extends State<Services> {
+  var _darkTheme;
+
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    _darkTheme = (themeNotifier.getTheme() == darkTheme);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.help, color: Colors.black,), 
+            icon: Icon(Icons.help,), 
             onPressed: (){})
         ],
         title:
-            Text('Services', style: GoogleFonts.aBeeZee(color: Colors.black)),
+            Text('Services', style: GoogleFonts.aBeeZee()),
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.black,
+              
             ),
             onPressed: () {
               Navigator.pop(context);
             }),
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(

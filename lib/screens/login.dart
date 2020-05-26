@@ -3,6 +3,10 @@ import '../screens/register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../screens/usersHome.dart';
+import 'package:laundry_app/services/snackbarService.dart';
+import 'package:provider/provider.dart';
+import 'package:laundry_app/state/authState.dart';
+import 'package:laundry_app/utils/utilities.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -41,6 +45,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    SnackBarService.instance.buildContext = context;
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -75,6 +81,15 @@ class _LoginState extends State<Login> {
           _form(width, height),
           _button(width, height),
           Positioned(
+            top: height * 0.22,
+            left: width * 0.35,
+            child: Icon(
+              Icons.local_laundry_service,
+              size: 130,
+              color: Color(0xff00cc00),
+            ),
+          ),
+          Positioned(
               top: height * 0.89,
               left: width * 0.3,
               child: InkWell(
@@ -93,23 +108,35 @@ class _LoginState extends State<Login> {
   }
 
   Widget _button(double width, double height) {
-    return Positioned(
-      top: height * 0.72,
-      left: width * 0.3,
-      child: Container(
-        width: width * 0.4,
-        child: FloatingActionButton.extended(
-            backgroundColor: Colors.white,
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => UserHome()));
-            },
-            label: Text(
-              'Sign In',
-              style: GoogleFonts.aBeeZee(color: Colors.green),
-            )),
-      ),
-    );
+    return Builder(builder: (BuildContext _context) {
+      SnackBarService.instance.buildContext = _context;
+      return Positioned(
+        top: height * 0.72,
+        left: width * 0.3,
+        child: Container(
+          width: width * 0.4,
+          child: FloatingActionButton.extended(
+              backgroundColor: Colors.white,
+              onPressed: () {
+                final form = _formKey.currentState;
+                form.save();
+                if (form.validate()) {
+                  try {
+                    Provider.of<AuthenticationState>(context, listen: false)
+                        .login(_emailController.text, _passwordController.text)
+                        .then((signInUser) => gotoHomeScreen(context));
+                  } catch (e) {
+                    print(e);
+                  }
+                }
+              },
+              label: Text(
+                'Sign In',
+                style: GoogleFonts.aBeeZee(color: Colors.green),
+              )),
+        ),
+      );
+    });
   }
 
   Widget _text(double width, double height) {
@@ -118,7 +145,8 @@ class _LoginState extends State<Login> {
       left: width * 0.1,
       child: Text(
         'Welcome back!',
-        style: GoogleFonts.aBeeZee(fontSize: 26, fontWeight: FontWeight.w600),
+        style: GoogleFonts.aBeeZee(
+            color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -134,6 +162,7 @@ class _LoginState extends State<Login> {
             height: height * 0.3,
             // color: Colors.green,
             child: Card(
+              color: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               elevation: 2,
@@ -146,11 +175,15 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       TextFormField(
+                        style: TextStyle(color: Colors.black),
                         keyboardType: TextInputType.emailAddress,
                         controller: _emailController,
                         focusNode: myFocusNodeEmail,
                         validator: EmailValidator.validate,
                         decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black38),
+                            ),
                             focusedBorder: OutlineInputBorder(
                                 borderSide:
                                     const BorderSide(color: Colors.green)),
@@ -159,14 +192,20 @@ class _LoginState extends State<Login> {
                               color: Colors.greenAccent,
                             ),
                             hintText: "Email",
+                            hintStyle: TextStyle(color: Colors.black38),
                             focusColor: Colors.green,
                             hoverColor: Colors.green),
                       ),
                       TextFormField(
                         controller: _passwordController,
+                        style: TextStyle(color: Colors.black),
                         focusNode: myFocusNodePassword,
                         validator: PasswordValidator.validate,
+                        obscureText: _obscureTextSignup,
                         decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black38),
+                            ),
                             suffixIcon: GestureDetector(
                               onTap: _toggleSignup,
                               child: Icon(
@@ -181,6 +220,7 @@ class _LoginState extends State<Login> {
                                 borderSide:
                                     const BorderSide(color: Colors.green)),
                             hintText: "Password",
+                            hintStyle: TextStyle(color: Colors.black38),
                             focusColor: Colors.green,
                             hoverColor: Colors.green),
                       ),

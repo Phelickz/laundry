@@ -18,52 +18,66 @@ class _MyHomePageState extends State<MyHomePage> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    return Stack(
-      children: <Widget>[
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          color: Colors.white,
+    return WillPopScope(
+      onWillPop: () async => false,
+          child: Scaffold(
+            body: Stack(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.white,
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: CustomPaint(
+                painter: CurvePainter2(),
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: CustomPaint(
+                painter: CurvePainter(),
+              ),
+            ),
+            Positioned(
+              top: height * 0.43,
+              left: width * 0.2,
+              child: Text(
+                "'Having an empty laundry is the",
+                style: GoogleFonts.aBeeZee(
+                    color: Colors.white70,
+                    fontSize: 15,
+                    decoration: TextDecoration.none),
+              ),
+            ),
+            Positioned(
+              top: height * 0.46,
+              left: width * 0.2,
+              child: Text(
+                "best 5 seconds of the week'",
+                style: GoogleFonts.aBeeZee(
+                    color: Colors.white70,
+                    fontSize: 15,
+                    decoration: TextDecoration.none),
+              ),
+            ),
+            _button("btn1", "Login", true, height, width),
+            _button("btn2", "Register", false, height, width),
+            Positioned(
+              top: height * 0.22,
+              left: width * 0.35,
+              child: Icon(
+                Icons.local_laundry_service,
+                size: 130,
+                color: Colors.white,
+              ),
+            )
+          ],
         ),
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: CustomPaint(
-            painter: CurvePainter2(),
-          ),
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: CustomPaint(
-            painter: CurvePainter(),
-          ),
-        ),
-        Positioned(
-          top: height * 0.43,
-          left: width * 0.2,
-          child: Text(
-            "'Having an empty laundry is the",
-            style: GoogleFonts.aBeeZee(
-                color: Colors.white70,
-                fontSize: 15,
-                decoration: TextDecoration.none),
-          ),
-        ),
-        Positioned(
-          top: height * 0.46,
-          left: width * 0.2,
-          child: Text(
-            "best 5 seconds of the week'",
-            style: GoogleFonts.aBeeZee(
-                color: Colors.white70,
-                fontSize: 15,
-                decoration: TextDecoration.none),
-          ),
-        ),
-        _button("btn1", "Login", true, height, width),
-        _button("btn2", "Register", false, height, width),
-      ],
+      ),
     );
   }
 

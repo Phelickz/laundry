@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../screens/login.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:laundry_app/services/snackbarService.dart';
+import 'package:provider/provider.dart';
+import 'package:laundry_app/state/authState.dart';
+import 'package:laundry_app/utils/utilities.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -40,6 +44,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
@@ -94,20 +99,40 @@ class _RegisterState extends State<Register> {
   }
 
   Widget _button(double width, double height) {
-    return Positioned(
-      top: height * 0.76,
-      left: width * 0.3,
-      child: Container(
-        width: width * 0.4,
-        child: FloatingActionButton.extended(
-            backgroundColor: Colors.white,
-            onPressed: () {},
-            label: Text(
-              'Register',
-              style: GoogleFonts.aBeeZee(color: Colors.green),
-            )),
-      ),
-    );
+    return Builder(builder: (BuildContext _context) {
+      SnackBarService.instance.buildContext = _context;
+      return Positioned(
+        top: height * 0.76,
+        left: width * 0.3,
+        child: Container(
+          width: width * 0.4,
+          child: FloatingActionButton.extended(
+              backgroundColor: Colors.white,
+              onPressed: () {
+                final form = _formKey.currentState;
+                form.save();
+                if (form.validate()) {
+                  try {
+                    Provider.of<AuthenticationState>(_context, listen: false)
+                        .signup(_emailController.text, _passwordController.text,
+                            _usernameController.text, _phoneController.text)
+                        .then((signInUser) => gotoHomeScreen(_context));
+                    // gotoHomeScreen(context);
+                    // print('signed up');
+                    // Navigator.push(context,
+                    //   MaterialPageRoute(builder: (context) => Feedss()));
+                  } catch (e) {
+                    print(e);
+                  }
+                }
+              },
+              label: Text(
+                'Register',
+                style: GoogleFonts.aBeeZee(color: Colors.green),
+              )),
+        ),
+      );
+    });
   }
 
   Widget _text(double width, double height) {
@@ -116,117 +141,142 @@ class _RegisterState extends State<Register> {
       left: width * 0.03,
       child: Text(
         'Sign up for a Laundry free Life',
-        style: GoogleFonts.aBeeZee(fontSize: 26, fontWeight: FontWeight.w600),
+        style: GoogleFonts.aBeeZee(
+            fontSize: 26, fontWeight: FontWeight.w600, color: Colors.black),
       ),
     );
   }
 
   Widget _form(double width, double height) {
-    return Positioned(
-      top: height * 0.36,
-      left: width * 0.068,
-      child: Builder(
-        builder: (BuildContext context) {
-          return Container(
-            width: width * 0.89,
-            height: height * 0.45,
-            // color: Colors.green,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              elevation: 2,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30.0, vertical: 25),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        controller: _usernameController,
-                        keyboardType: TextInputType.text,
-                        focusNode: myFocusNodeUsername,
-                        validator: UsernameValidator.validate,
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.green)),
-                            suffixIcon: Icon(
-                              Icons.account_circle,
-                              color: Colors.greenAccent,
-                            ),
-                            hintText: "Username",
-                            focusColor: Colors.green,
-                            hoverColor: Colors.green),
-                      ),
-                      SizedBox(height: 10),
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        controller: _emailController,
-                        focusNode: myFocusNodeEmail,
-                        validator: EmailValidator.validate,
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.green)),
-                            suffixIcon: Icon(
-                              Icons.email,
-                              color: Colors.greenAccent,
-                            ),
-                            hintText: "Email",
-                            focusColor: Colors.green,
-                            hoverColor: Colors.green),
-                      ),
-                      SizedBox(height: 10),
-                      TextFormField(
-                        keyboardType: TextInputType.phone,
-                        controller: _phoneController,
-                        focusNode: myFocusNodePhone,
-                        validator: PhoneValidator.validate,
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.green)),
-                            suffixIcon: Icon(
-                              Icons.phone,
-                              color: Colors.greenAccent,
-                            ),
-                            hintText: "Phone",
-                            focusColor: Colors.green,
-                            hoverColor: Colors.green),
-                      ),
-                      SizedBox(height: 10),
-                      TextFormField(
-                        controller: _passwordController,
-                        focusNode: myFocusNodePassword,
-                        validator: PasswordValidator.validate,
-                        decoration: InputDecoration(
-                            suffixIcon: GestureDetector(
-                              onTap: _toggleSignup,
-                              child: Icon(
-                                _obscureTextSignup
-                                    ? Icons.remove_red_eye
-                                    : Icons.enhanced_encryption,
-                                // size: 15.0,
-                                color: Colors.green,
+    return Builder(builder: (BuildContext _context) {
+      return Positioned(
+        top: height * 0.36,
+        left: width * 0.068,
+        child: Builder(
+          builder: (BuildContext context) {
+            return Container(
+              width: width * 0.89,
+              height: height * 0.45,
+              // color: Colors.green,
+              child: Card(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30.0, vertical: 25),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          style: TextStyle(color: Colors.black),
+                          controller: _usernameController,
+                          keyboardType: TextInputType.text,
+                          focusNode: myFocusNodeUsername,
+                          validator: UsernameValidator.validate,
+                          decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black38),
                               ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.green)),
-                            hintText: "Password",
-                            focusColor: Colors.green,
-                            hoverColor: Colors.green),
-                      ),
-                    ],
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.green)),
+                              suffixIcon: Icon(
+                                Icons.account_circle,
+                                color: Colors.greenAccent,
+                              ),
+                              hintText: "Username",
+                              hintStyle: TextStyle(color: Colors.black45),
+                              focusColor: Colors.green,
+                              hoverColor: Colors.green),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          style: TextStyle(color: Colors.black),
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _emailController,
+                          focusNode: myFocusNodeEmail,
+                          validator: EmailValidator.validate,
+                          decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black38),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.green)),
+                              suffixIcon: Icon(
+                                Icons.email,
+                                color: Colors.greenAccent,
+                              ),
+                              hintText: "Email",
+                              hintStyle: TextStyle(color: Colors.black45),
+                              focusColor: Colors.green,
+                              hoverColor: Colors.green),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          style: TextStyle(color: Colors.black),
+                          keyboardType: TextInputType.phone,
+                          controller: _phoneController,
+                          focusNode: myFocusNodePhone,
+                          validator: PhoneValidator.validate,
+                          decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black38),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.green)),
+                              suffixIcon: Icon(
+                                Icons.phone,
+                                color: Colors.greenAccent,
+                              ),
+                              hintText: "Phone",
+                              hintStyle: TextStyle(color: Colors.black45),
+                              focusColor: Colors.green,
+                              hoverColor: Colors.green),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          style: TextStyle(color: Colors.black),
+                          controller: _passwordController,
+                          focusNode: myFocusNodePassword,
+                          obscureText: _obscureTextSignup,
+                          validator: PasswordValidator.validate,
+                          decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black38),
+                              ),
+                              suffixIcon: GestureDetector(
+                                onTap: _toggleSignup,
+                                child: Icon(
+                                  _obscureTextSignup
+                                      ? Icons.remove_red_eye
+                                      : Icons.enhanced_encryption,
+                                  // size: 15.0,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.green)),
+                              hintText: "Password",
+                              hintStyle: TextStyle(color: Colors.black45),
+                              focusColor: Colors.green,
+                              hoverColor: Colors.green),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      );
+    });
   }
 }
 
