@@ -4,6 +4,7 @@ import 'package:laundry_app/screens/payment.dart';
 import 'package:laundry_app/state/themeNotifier.dart';
 import 'package:laundry_app/utils/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FormPage extends StatefulWidget {
   @override
@@ -85,6 +86,12 @@ class _FormPageState extends State<FormPage> {
                           backgroundColor: Colors.green[800],
                           icon: Icon(Icons.payment),
                           onPressed: () {
+                            if(_darkTheme == true){
+                              setState(() {
+                                _darkTheme == false;
+                                onThemeChanged(false, themeNotifier);
+                              });
+                            }
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -297,5 +304,12 @@ class _FormPageState extends State<FormPage> {
         );
       },
     );
+  }
+  void onThemeChanged(bool value, ThemeNotifier themeNotifier) async {
+    (value)
+        ? themeNotifier.setTheme(darkTheme)
+        : themeNotifier.setTheme(lightTheme);
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', value);
   }
 }
