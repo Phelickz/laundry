@@ -15,8 +15,7 @@ Color hexToColor(String code) {
   return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
 }
 
-String publicKey = "pk_test_73862b46b977289f342db20e73049899f9d945c2";
-String secretKey = "sk_test_3055662bcfb085f3ae6a060028f9bb66b264fc62";
+
 
 class CheckoutMethodCard extends StatefulWidget {
   @override

@@ -52,7 +52,7 @@ class _PriceListExpressState extends State<PriceListExpress> {
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
                                 ),
-                                trailing: Text(
+                                trailing: Text("#"+
                                   _data['bedsheets'].toString(),
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
@@ -67,7 +67,7 @@ class _PriceListExpressState extends State<PriceListExpress> {
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
                                 ),
-                                trailing: Text(
+                                trailing: Text("#"+
                                   _data['duvet'].toString(),
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
@@ -82,7 +82,7 @@ class _PriceListExpressState extends State<PriceListExpress> {
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
                                 ),
-                                trailing: Text(
+                                trailing: Text("#"+
                                   _data['native'].toString(),
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
@@ -97,7 +97,7 @@ class _PriceListExpressState extends State<PriceListExpress> {
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
                                 ),
-                                trailing: Text(
+                                trailing: Text("#"+
                                   _data['shirts'].toString(),
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
@@ -112,7 +112,7 @@ class _PriceListExpressState extends State<PriceListExpress> {
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
                                 ),
-                                trailing: Text(
+                                trailing: Text("#"+
                                   _data['trousers'].toString(),
                                   style: GoogleFonts.aBeeZee(
                                       fontWeight: FontWeight.w600),
