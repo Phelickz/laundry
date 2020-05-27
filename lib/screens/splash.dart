@@ -48,18 +48,19 @@ class _SplashScreenState extends State<SplashScreen> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/3243087700_74cdbf94ee_k.jpg'),
-                    fit: BoxFit.cover)),
+              image: DecorationImage(
+                  image: AssetImage('assets/3243087700_74cdbf94ee_k.jpg'),
+                  fit: BoxFit.cover),
+            ),
           ),
           Opacity(
             opacity: 0.8,
             child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.green[900]
-              // color: Color(0xff00cc00),
-            ),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.green[900]
+                // color: Color(0xff00cc00),
+                ),
           ),
           Opacity(
             opacity: 0.3,
@@ -71,29 +72,26 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
           Positioned(
-            top: height * 0.45,
-            left: width * 0.3,
-            child: Text('SIVRAM WASH', style: GoogleFonts.dosis(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.white
-            ))),
+              top: height * 0.45,
+              left: width * 0.3,
+              child: Text('SIVRAM WASH',
+                  style: GoogleFonts.dosis(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white))),
           Positioned(
-            top: height * 0.5,
-            left: width * 0.15,
-            child: Text('Laundry services at your doorstep', style: GoogleFonts.aBeeZee(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white54
-            ))),
-            Positioned(
-              top: height * 0.8,
-              left: width * 0.47,
-              child: SpinKitThreeBounce(
-                size: 18,
-                color: Colors.white60
-              ),
-            )
+              top: height * 0.5,
+              left: width * 0.15,
+              child: Text('Laundry services at your doorstep',
+                  style: GoogleFonts.aBeeZee(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white54))),
+          Positioned(
+            top: height * 0.8,
+            left: width * 0.47,
+            child: SpinKitThreeBounce(size: 18, color: Colors.white60),
+          )
         ],
       ),
     );

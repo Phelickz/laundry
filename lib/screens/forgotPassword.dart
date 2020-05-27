@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:laundry_app/services/snackbarService.dart';
 import 'package:laundry_app/state/authState.dart';
@@ -18,37 +18,76 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     SnackBarService.instance.buildContext = context;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.pop(context);
-            }),
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white,),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          elevation: 5,
+          backgroundColor: Colors.black,
+          title: Text(
+            'Forgot Password',
+            style: GoogleFonts.aBeeZee(color: Colors.white),
+          ),
+        ),
+        body: Stack(
+          children: <Widget>[
+            _backgoundImage(width, height),
+            _backgoundColor(width, height),
+            _form(width, height),
+            showAlert(),
+            // _backButton(width, height),
+          ],
+        ));
+  }
+
+  Widget _backgoundImage(double width, double height) {
+    return Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/3243087700_74cdbf94ee_k.jpg'),
+                fit: BoxFit.cover)));
+  }
+
+  Widget _backgoundColor(double width, double height) {
+    return Opacity(
+      opacity: 0.7,
+      child: Container(
+        width: width,
+        height: height,
+        color: Colors.teal,
       ),
-      body: SingleChildScrollView(
-        child: Column(children: <Widget>[
-          showAlert(),
-          SizedBox(height: 10),
-          Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    fit: BoxFit.contain,
-                    image: AssetImage(
-                        "assets/images/shutterstock_remember_password.jpg")),
-                color: Colors.white),
-            height: 210,
-            width: double.infinity,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Form(
+    );
+  }
+
+  Widget _backButton(double width, double height) {
+    return Positioned(
+        top: height * 0.09,
+        width: width * 0.02,
+        child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.arrow_back,
+              size: 30,
+            )));
+  }
+
+  Widget _form(double width, double height) {
+    return Positioned(
+        top: height * 0.3,
+        child: Container(
+          // color: Colors.red,
+          width: width,
+          child: Form(
             key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -58,12 +97,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     child: Padding(
                   padding: const EdgeInsets.only(left: 30, top: 10),
                   child: Text(
-                    'Enter the email address associated with your account',
-                    style: TextStyle(
-                        fontFamily: "WorkSansSemiBold",
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
+                      'Enter the email address associated with your account',
+                      style: GoogleFonts.aBeeZee(
+                          fontSize: 20, fontWeight: FontWeight.w600)),
                 )),
                 SizedBox(height: 50),
                 // Padding(
@@ -104,7 +140,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               fontSize: 20,
                               color: Colors.black),
                         ),
-                        color: Colors.red,
+                        color: Colors.green,
                         onPressed: () {
                           final form = formKey.currentState;
                           form.save();
@@ -124,45 +160,47 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               print(e);
                             }
                           }
+                          emailController.clear();
                         }),
                   ),
                 )
               ],
             ),
           ),
-        ]),
-      ),
-    );
+        ));
   }
 
   Widget showAlert() {
     if (_error != null) {
-      return Container(
-        color: Colors.green,
-        width: double.infinity,
-        padding: EdgeInsets.all(8.0),
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(Icons.error_outline),
-            ),
-            Expanded(
-                child: Text(
-              _error,
-              maxLines: 3,
-            )),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    setState(() {
-                      _error = null;
-                    });
-                  }),
-            )
-          ],
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          color: Colors.green,
+          width: double.infinity,
+          padding: EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Icon(Icons.error_outline),
+              ),
+              Expanded(
+                  child: Text(
+                _error,
+                maxLines: 3,
+              )),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      setState(() {
+                        _error = null;
+                      });
+                    }),
+              )
+            ],
+          ),
         ),
       );
     }
@@ -173,3 +211,24 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         child: SizedBox(height: 20));
   }
 }
+
+// SingleChildScrollView(
+//         child: Column(children: <Widget>[
+//           showAlert(),
+//           SizedBox(height: 10),
+//           Container(
+//             decoration: BoxDecoration(
+//                 // image: DecorationImage(
+//                 //     fit: BoxFit.contain,
+//                 //     image: AssetImage(
+//                 //         "assets/images/shutterstock_remember_password.jpg")),
+//                 color: Colors.white),
+//             height: 210,
+//             width: double.infinity,
+//           ),
+//           SizedBox(
+//             height: 20,
+//           ),
+
+//         ]),
+//       ),

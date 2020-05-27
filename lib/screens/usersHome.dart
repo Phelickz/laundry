@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:laundry_app/screens/cart.dart';
 import '../screens/services.dart';
 import '../screens/request.dart';
 import '../screens/priceList.dart';
@@ -53,7 +54,8 @@ class _UserHomeState extends State<UserHome> {
               _text(width, height),
               _cards(width, height),
               _button(width, height),
-              _text1(width, height)
+              _text1(width, height),
+              _history(width, height)
             ],
           ),
         ),
@@ -68,6 +70,22 @@ class _UserHomeState extends State<UserHome> {
         child: IconButton(
             icon: Icon(
               Icons.shopping_cart,
+              size: 30,
+              color: Color(0xff00cc00),
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context, CupertinoPageRoute(builder: (context) => Cart()));
+            }));
+  }
+
+  Widget _history(double width, double height) {
+    return Positioned(
+        top: height * 0.019,
+        left: width * 0.76,
+        child: IconButton(
+            icon: Icon(
+              Icons.history,
               size: 30,
               color: Color(0xff00cc00),
             ),
@@ -123,7 +141,7 @@ class _UserHomeState extends State<UserHome> {
                 InkWell(
                   onTap: () {
                     Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) => Request()));
+                        CupertinoPageRoute(builder: (context) => Request(pageOption: PageOption.Request,)));
                   },
                   child: Container(
                     height: height * 0.3,
@@ -156,7 +174,7 @@ class _UserHomeState extends State<UserHome> {
                 InkWell(
                   onTap: () {
                     Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) => Price()));
+                        CupertinoPageRoute(builder: (context) => Request(pageOption: PageOption.Price,)));
                   },
                   child: Container(
                     height: height * 0.3,

@@ -44,81 +44,85 @@ class _ProfileState extends State<Profile> {
     double height = MediaQuery.of(context).size.width;
     double width = MediaQuery.of(context).size.height;
     return Scaffold(
-        appBar: AppBar(
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(
-                  Icons.more_vert,
-                ),
-                onPressed: _modalBottomSheetMenu)
-          ],
-          title: Text('Profile', style: GoogleFonts.aBeeZee()),
-          leading: IconButton(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
               icon: Icon(
-                Icons.arrow_back,
+                Icons.more_vert,
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-        ),
-        body: ListView.builder(
-            itemCount: userNotifier.userProfileData.length,
-            itemBuilder: (context, index) {
-              var _data = userNotifier.userProfileData[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 150),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.center,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(_data.photoUrl),
+              onPressed: _modalBottomSheetMenu)
+        ],
+        title: Text('Profile', style: GoogleFonts.aBeeZee()),
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+      ),
+      body: userNotifier.userProfileData.isNotEmpty
+          ? ListView.builder(
+              itemCount: userNotifier.userProfileData.length,
+              itemBuilder: (context, index) {
+                var _data = userNotifier.userProfileData[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 150),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.center,
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(_data.photoUrl),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Align(
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            _data.username,
+                            style: GoogleFonts.aBeeZee(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Align(
                         alignment: Alignment.center,
                         child: Text(
-                          _data.username,
+                          _data.email,
                           style: GoogleFonts.aBeeZee(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                        )),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        _data.email,
-                        style: GoogleFonts.aBeeZee(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color:
-                                _darkTheme ? Colors.white54 : Colors.black54),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  _darkTheme ? Colors.white54 : Colors.black54),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        _data.phone,
-                        style: GoogleFonts.aBeeZee(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color:
-                                _darkTheme ? Colors.white54 : Colors.black54),
+                      SizedBox(
+                        height: 10,
                       ),
-                    )
-                  ],
-                ),
-              );
-            }));
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          _data.phone,
+                          style: GoogleFonts.aBeeZee(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  _darkTheme ? Colors.white54 : Colors.black54),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            )
+          : Center(child: CircularProgressIndicator()),
+    );
   }
 
   void _modalBottomSheetMenu() {

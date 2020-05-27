@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:laundry_app/screens/priceList.dart';
+import 'package:laundry_app/screens/priceListExpress.dart';
+import 'package:laundry_app/screens/priceServiceType.dart';
 import 'package:laundry_app/screens/selectExpress.dart';
 import 'package:laundry_app/screens/selectService.dart';
 import 'package:laundry_app/state/themeNotifier.dart';
 import 'package:laundry_app/utils/theme.dart';
 import 'package:provider/provider.dart';
 
+enum PageOption { Price, Request }
+
 class Request extends StatefulWidget {
+  final PageOption pageOption;
+
+  const Request({Key key, @required this.pageOption}) : super(key: key);
   @override
   _RequestState createState() => _RequestState();
 }
@@ -20,7 +28,11 @@ class _RequestState extends State<Request> {
     return Scaffold(
       backgroundColor: _darkTheme ? Colors.black : Colors.white,
       appBar: AppBar(
-        title: Text('Request a Pick Up', style: GoogleFonts.aBeeZee()),
+        title: Text(
+            this.widget.pageOption == PageOption.Request
+                ? 'Request a Pick Up'
+                : "Select a service type",
+            style: GoogleFonts.aBeeZee()),
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -37,8 +49,21 @@ class _RequestState extends State<Request> {
             elevation: 2,
             child: ListTile(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SelectRegular()));
+                if (this.widget.pageOption == PageOption.Request) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SelectRegular(
+                                serviceType: ServiceType.Regular,
+                              )));
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PriceServices(
+                                serviceType: PriceServiceType.Regular,
+                              )));
+                }
               },
               subtitle: Text(
                 'Delivery within 2 days',
@@ -55,8 +80,21 @@ class _RequestState extends State<Request> {
             elevation: 2,
             child: ListTile(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SelectExpress()));
+                if (this.widget.pageOption == PageOption.Request) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SelectRegular(
+                                serviceType: ServiceType.Express,
+                              )));
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PriceServices(
+                                serviceType: PriceServiceType.Express,
+                              )));
+                }
               },
               subtitle: Text(
                 'Delivery within 24 hours',

@@ -6,22 +6,26 @@ import 'package:laundry_app/utils/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum FormRegularMode {
+import 'cart.dart';
+
+enum FormExpressMode {
   WashandFold,
   WashandIron,
   DryCleaning
 }
 
 
-class FormPage extends StatefulWidget {
-  final FormRegularMode _formMode;
-  FormPage(this._formMode);
+class FormExpressPage extends StatefulWidget {
+  final FormExpressMode formMode;
+
+  const FormExpressPage({Key key, @required this.formMode}) : super(key: key);
+  
 
   @override
-  _FormPageState createState() => _FormPageState();
+  _FormExpressPageState createState() => _FormExpressPageState();
 }
 
-class _FormPageState extends State<FormPage> {
+class _FormExpressPageState extends State<FormExpressPage> {
   bool _visible = true;
   String _currentSelectedValue;
   final _formKey = GlobalKey<FormState>();
@@ -94,24 +98,18 @@ class _FormPageState extends State<FormPage> {
                       SizedBox(height: 25),
                       FloatingActionButton.extended(
                           backgroundColor: Colors.green[800],
-                          icon: Icon(Icons.payment),
+                          icon: Icon(Icons.add_shopping_cart),
                           onPressed: () {
-                            if(_darkTheme == true){
-                              setState(() {
-                                _darkTheme = false;
-                                onThemeChanged(false, themeNotifier);
-                              });
-                            }
                             // if(this.widget._formMode == FormMode.WashandFold){
-
+                                //calculate price
                             // }
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        CheckoutMethodCard()));
+                                        Cart()));
                           },
-                          label: Text('Add to Cart'))
+                          label: Text('Add to cart'))
                     ],
                   ),
                 ),
@@ -317,12 +315,5 @@ class _FormPageState extends State<FormPage> {
         );
       },
     );
-  }
-  void onThemeChanged(bool value, ThemeNotifier themeNotifier) async {
-    (value)
-        ? themeNotifier.setTheme(darkTheme)
-        : themeNotifier.setTheme(lightTheme);
-    var prefs = await SharedPreferences.getInstance();
-    prefs.setBool('darkMode', value);
   }
 }

@@ -4,14 +4,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:http/http.dart' as http;
+import 'package:laundry_app/screens/orderList.dart';
+import 'package:laundry_app/state/themeNotifier.dart';
 import 'package:laundry_app/utils/button.dart';
+import 'package:laundry_app/utils/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Color hexToColor(String code) {
   return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
 }
 
-
-
+String publicKey = "pk_test_73862b46b977289f342db20e73049899f9d945c2";
+String secretKey = "sk_test_3055662bcfb085f3ae6a060028f9bb66b264fc62";
 
 class CheckoutMethodCard extends StatefulWidget {
   @override
@@ -20,13 +25,24 @@ class CheckoutMethodCard extends StatefulWidget {
 
 // Pay public key
 class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
+  bool _stateChanged;
   @override
   void initState() {
     PaystackPlugin.initialize(publicKey: publicKey);
     super.initState();
   }
 
+  Future<void> _checkPreferences() async {
+    var _prefs = await SharedPreferences.getInstance();
+    bool stateChanged = _prefs.getBool('changed') ?? false;
+    setState(() {
+      this._stateChanged = stateChanged;
+    });
+  }
+
   Dialog successDialog(context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    _darkTheme = (themeNotifier.getTheme() == darkTheme);
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.0)), //this right here
@@ -65,6 +81,23 @@ class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
                 style: TextStyle(fontSize: 13),
               ),
               Text("processed.", style: TextStyle(fontSize: 13)),
+              SizedBox(height: 15),
+              FloatingActionButton.extended(
+                icon: Icon(Icons.close),
+                heroTag: "btn2",
+                onPressed: () async {
+                 await _checkPreferences();
+                  if (_stateChanged == true) {
+                    setState(() {
+                      _darkTheme = true;
+                      onThemeChanged(true, themeNotifier, false);
+                    });
+                  }
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Orders()));
+                },
+                label: Text('Close'),
+              )
             ],
           ),
         ),
@@ -75,14 +108,19 @@ class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
   void _showDialog() {
     // flutter defined function
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return successDialog(context);
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: successDialog(context));
       },
     );
   }
 
   Dialog errorDialog(context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    _darkTheme = (themeNotifier.getTheme() == darkTheme);
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.0)), //this right here
@@ -115,6 +153,22 @@ class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 13),
               ),
+              SizedBox(height: 15),
+              FloatingActionButton.extended(
+                heroTag: "btn1",
+                icon: Icon(Icons.close),
+                onPressed: () async {
+                  await _checkPreferences();
+                  if (_stateChanged == true) {
+                    setState(() {
+                      _darkTheme = true;
+                      onThemeChanged(true, themeNotifier, false);
+                    });
+                  }
+                  Navigator.pop(context);
+                },
+                label: Text('Close'),
+              )
             ],
           ),
         ),
@@ -125,9 +179,12 @@ class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
   void _showErrorDialog() {
     // flutter defined function
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return errorDialog(context);
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: errorDialog(context));
       },
     );
   }
@@ -146,10 +203,11 @@ class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
     Charge charge = Charge()
       ..amount = 10000
       // ..reference = _getReference()
-      
+
       ..email = 'customer@email.com';
-      String accesscode = await _fetchAccessCodeFromServer(secretKey, _getReference());
-      charge.accessCode = accesscode;
+    String accesscode =
+        await _fetchAccessCodeFromServer(secretKey, _getReference());
+    charge.accessCode = accesscode;
     CheckoutResponse response = await PaystackPlugin.checkout(
       context,
       method: CheckoutMethod.card, // Defaults to CheckoutMethod.selectable
@@ -162,7 +220,8 @@ class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
     }
   }
 
-  Future<String> _fetchAccessCodeFromServer(String skTest, String _getReference) async {
+  Future<String> _fetchAccessCodeFromServer(
+      String skTest, String _getReference) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -186,27 +245,30 @@ class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
   void _verifyOnServer(String reference) async {
     try {
       Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $secretKey'
-    };
-      http.Response response = await http.get('https://api.paystack.co/transaction/verify/'+reference, headers: headers);
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $secretKey'
+      };
+      http.Response response = await http.get(
+          'https://api.paystack.co/transaction/verify/' + reference,
+          headers: headers);
       final Map body = json.decode(response.body);
 
-      if(body['data']['status'] == 'success'){
+      if (body['data']['status'] == 'success') {
         _showDialog();
-      }else {
+      } else {
         _showErrorDialog();
       }
-      
     } catch (e) {
       print(e);
     }
   }
 
-
+  var _darkTheme;
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    _darkTheme = (themeNotifier.getTheme() == darkTheme);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -224,9 +286,26 @@ class _CheckoutMethodCardState extends State<CheckoutMethodCard> {
                 style:
                     TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
-              onClick: () => chargeCard(),
+              onClick: () {
+                if (_darkTheme == true) {
+                  setState(() {
+                    _darkTheme = false;
+                    onThemeChanged(false, themeNotifier, true);
+                  });
+                }
+                chargeCard();
+              },
             ),
           )),
     );
+  }
+
+  void onThemeChanged(bool value, ThemeNotifier themeNotifier, bool val) async {
+    (value)
+        ? themeNotifier.setTheme(darkTheme)
+        : themeNotifier.setTheme(lightTheme);
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', value);
+    prefs.setBool('changed', val);
   }
 }

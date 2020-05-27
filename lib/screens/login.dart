@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:laundry_app/screens/forgotPassword.dart';
 import '../screens/register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -89,6 +90,19 @@ class _LoginState extends State<Login> {
               color: Color(0xff00cc00),
             ),
           ),
+          Positioned(
+              top: height * 0.8,
+              left: width * 0.6,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => ForgotPassword()));
+                },
+                child: Text(
+                  'Forgot Password?',
+                  style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 16),
+                ),
+              )),
           Positioned(
               top: height * 0.89,
               left: width * 0.3,
